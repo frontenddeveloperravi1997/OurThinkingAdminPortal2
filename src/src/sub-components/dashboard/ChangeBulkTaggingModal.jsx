@@ -26,7 +26,7 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
         const validFormat = /^([A-Za-z\s]+#[A-Za-z\s]+|[A-Za-z\s]+)(\|([A-Za-z\s]+#[A-Za-z\s]+|[A-Za-z\s]+))*\|?$/;
     
         if (!validFormat.test(inputValue)) {
-            toast.error("Please enter values in the correct format: Parent#Child|Parent#Child| fromt which is given in note", {
+            toast.error("Please enter values in the correct format: Parent#Child|Parent#Child| which is given in note", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,

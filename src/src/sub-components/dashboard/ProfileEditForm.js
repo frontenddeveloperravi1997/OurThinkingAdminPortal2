@@ -173,6 +173,10 @@ const ProfileEditForm = ({
   });
   const emailWatch = watch("email");
   const onSubmit = (data) => {
+    const subscribeToInstantAlert = data?.instantAlert?.label === "No" ? false : true;
+  
+  console.log('subscribeToInstantAlert--', subscribeToInstantAlert);
+
     const updatedPermissions = productPermissionsArr?.map((permission) => {
       const newPermission = { ...permission };
 
@@ -307,6 +311,13 @@ const ProfileEditForm = ({
     }
 
   };
+
+  const subscriptionFrequency = user?.emailFrequency?.subscriptionFrequency || "";
+  if (subscriptionFrequency) {
+    //console.log('subscriptionFrequency--', subscriptionFrequency);
+  }
+
+  //console.log('emailFrequency--',emailFrequency);
 
   const checkEmailExists = async (email) => {
     setEmailValidLoading(true);
