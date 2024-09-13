@@ -193,6 +193,7 @@ const ProfileEditForm = ({
     const isCountry = data?.countryId !== "";
     const allEmpty = !isLanguage && !isTopic && !isCountry;
     const allFilled = isLanguage && isTopic && isCountry;
+    const anyNotEmpty = !isLanguage || !isTopic || !isCountry;
     
     if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "No" && allEmpty) {
       // Case 1: dataEmailFreq = "Never" & dataInstantAlert = "No" & allEmpty
@@ -254,12 +255,91 @@ const ProfileEditForm = ({
         progress: undefined,
         theme: "colored",
       });
-    }
+    } else {
+      if (method === "addUser") {
+        const transformedRoles = data?.usersInRoles?.length > 0
+          ? data.usersInRoles.map((role) => ({ roleId: role.value }))
+          : null;
     
-
-
+        createNewUser({
+          userID: 0,
+          username: null,
+          email: data?.email,
+          emailFrequencyID: data?.emailFreq?.value,
+          subscriptions: data?.topicId === ""
+            ? null
+            : [
+                {
+                  subscriptionID: 0,
+                  userID: 0,
+                  topicID: data?.topicId,
+                  countryID: data?.countryId,
+                  languageID: data?.language,
+                },
+              ],
+          emailNotifications: null,
+          firstName: data?.firstName,
+          lastName: data?.lastName,
+          contactId: uuidv4(),
+          createdDate: new Date().toISOString(),
+          lastLoginDate: null,
+          invitationDate: null,
+          modifiedDate: null,
+          exceptionDomain: null,
+          subscribeToInstantAlert: data?.instantAlert?.label === "No" ? false : true,
+          unsubscribeFromAlerts: data?.instantAlert?.label === "No" ? true : false,
+          organizationID: data?.organization?.value === "" ? null : data?.organization?.value,
+          emailFrequency: null,
+          comparativeGuides: updatedPermissions?.[0],
+          usersInRoles: transformedRoles,
+          organization: null,
+          email_Verification: null,
+        });
+      } else if (method === "updateUser") {
+        const transformedRolesEdit = data?.usersInRoles?.length > 0
+          ? data.usersInRoles.map((role) => ({
+              roleId: role.value,
+              userId: user?.userID,
+            }))
+          : null;
+    
+        updateUser({
+          userID: user?.userID,
+          username: user?.username,
+          email: data?.email,
+          emailFrequencyID: data?.emailFreq?.value,
+          subscriptions: data?.topicId === ""
+            ? null
+            : [
+                {
+                  subscriptionID: user?.subscriptions?.[0]?.subscriptionID,
+                  userID: user?.subscriptions?.[0]?.userID,
+                  topicID: data?.topicId,
+                  countryID: data?.countryId,
+                  languageID: data?.language,
+                },
+              ],
+          emailNotifications: user?.emailNotifications,
+          firstName: data?.firstName,
+          lastName: data?.lastName,
+          contactId: user?.contactId,
+          createdDate: user?.createdDate,
+          lastLoginDate: user?.lastLoginDate,
+          invitationDate: user?.invitationDate,
+          modifiedDate: new Date().toISOString(),
+          exceptionDomain: user?.exceptionDomain,
+          subscribeToInstantAlert: data?.instantAlert?.label === "No" ? false : true,
+          unsubscribeFromAlerts: data?.instantAlert?.label === "No" ? true : false,
+          organizationID: data?.organization?.value === "" ? null : data?.organization?.value,
+          emailFrequency: user?.emailFrequency,
+          comparativeGuides: updatedPermissions?.[0],
+          usersInRoles: transformedRolesEdit,
+          organization: user?.organization,
+          email_Verification: user?.email_Verification,
+        });
+      }
+    }
   };
-
   
 
   const checkEmailExists = async (email) => {
